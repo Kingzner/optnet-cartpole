@@ -1,0 +1,6 @@
+N=5
+u_max=10.0
+x_max=1.0
+reg=1.0
+lr=0.001
+epochs=50

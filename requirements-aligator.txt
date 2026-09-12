@@ -1,0 +1,9 @@
+# Optional dependencies, only needed for:
+#   - generate_dataset.py                (expert trajectory optimisation)
+#   - compute_cartpole_linearization.py  (linearised dynamics)
+#   - evaluate_table_aligator.py         (closed-loop rollout, Table 5)
+#   - extensions/                        (conditional / robustness experiments)
+pinocchio
+aligator
+hppfcl
+proxsuite

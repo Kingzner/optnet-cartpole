@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Environments
+.venv/
+venv/
+env/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Job logs (cluster runs)
+output.*.out
+error.*.err
+*.log
+
+# Intermediate files produced by the scripts
+cartpole_data/features_clean.pt
+cartpole_data/labels_clean.pt
+cartpole_data/features_original_backup.pt
+cartpole_data/labels_original_backup.pt
+cartpole_linear_dt001.npz
+constrained_vs_unconstrained_results.pkl
+quick_constrained_vs_unconstrained.pkl
+table_results.csv
+
+# Note: model checkpoints, results/ and cartpole_data/features*.pt are intentionally
+# tracked, so that every figure and table in the thesis can be reproduced without
+# re-training or re-generating the dataset.

@@ -1,0 +1,12 @@
+# Core dependencies: training, evaluation and plotting.
+torch>=1.13
+numpy
+scipy
+pandas
+matplotlib
+seaborn
+
+# Differentiable QP layer used by models.py.
+# If the PyPI release is unavailable, install from git instead:
+#   pip install git+https://github.com/locuslab/qpth.git
+qpth>=0.0.16
