@@ -1,10 +1,18 @@
+import os
+import sys
+
+# Allow this script to be run directly from the repository root, e.g.
+#     python scripts/data/generate_dataset.py
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
 import pinocchio as pin 
 import numpy as np 
 import aligator 
-import os 
 import torch 
 from aligator import constraints, manifolds 
-from utils import create_cartpole  # 请确保 utils.py 在同一目录或 PYTHONPATH 中 
+from cartpole.utils import create_cartpole  # 请确保 utils.py 在同一目录或 PYTHONPATH 中 
  
 # =============================== 
 # 1️⃣ 基本参数配置 
@@ -13,7 +21,7 @@ dt = 0.01                # 时间步长 (s)
 nsteps = 500             # 每个轨迹的步数（对应 5 秒） 
 nu = 1                   # 控制维度 
 N_SAMPLES = 1000         # 总共生成 1000 条轨迹 
-SAVE_DIR = "cartpole_data"  # 保存数据的文件夹 
+SAVE_DIR = "data"  # 保存数据的文件夹 
 os.makedirs(SAVE_DIR, exist_ok=True)  # 如果文件夹不存在则创建 
  
 # 位置约束范围（放宽到 ±1.0 米） 

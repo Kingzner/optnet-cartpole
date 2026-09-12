@@ -1,4 +1,12 @@
 import os
+import sys
+
+# Allow this script to be run directly from the repository root, e.g.
+#     python scripts/evaluate/check_expert_success.py
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
 
 import numpy as np
 import torch
@@ -6,8 +14,7 @@ import torch
 
 FEATURE_CANDIDATES = [
     "features.pt",
-    os.path.join("cartpole_data", "features.pt"),
-    "features (7).pt",
+    os.path.join("data", "features.pt"),
 ]
 
 

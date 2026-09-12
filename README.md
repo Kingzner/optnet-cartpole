@@ -28,31 +28,46 @@ not a sufficient criterion for choosing a controller.
 
 ```
 .
-├── models.py                              # OptNetCartPoleMPC: feature network + differentiable QP layer
-├── utils.py                               # cart-pole model builder (Pinocchio)
-├── generate_dataset.py                    # expert trajectories via constrained trajectory optimization (aligator/ProxDDP)
-├── filter_data.py                         # remove extreme trajectories (threshold 20) -> 994 kept
-├── train_cartpole.py                      # train the OptNet-QP controller
-├── train_baseline.py                      # train the MLP baseline
-├── train_unconstrained.py                 # same QP structure, position bound relaxed (x_max = 100 m)
-├── compute_cartpole_linearization.py      # optional: linearised dynamics from aligator rollouts
-├── evaluate_metrics.py                    # prediction metrics in physical units (Table 3)
-├── evaluate_table_aligator.py             # closed-loop horizon comparison (Table 5)
-├── check_expert_success.py                # sanity check on the expert demonstrations
-├── plot.py                                # loss curves (Figure 4)
-├── plot_comparison.py                     # OptNet vs. MLP losses (Figure 5)
-├── analyze_constrained_unconstrained.py   # constrained / relaxed-bound / MLP (Figure 6)
-├── plot_optnet_vs_mlp_many_trajectories.py# rollout comparison (Figure 7) + violation counts (Table 4)
-├── plot_qp_constraints_standalone.py      # sparse structure of G and vector h (Figures 8 and 9)
-├── plot_all_trajectories_constraints.py   # dataset visualisation (Figure 1)
-├── plot_all_control_forces_constraints.py # dataset visualisation (Figure 1)
-├── cartpole_data/                         # dataset (see below)
-├── work_cartpole_filtered/                # main OptNet-QP model, N = 10
-├── work_cartpole_baseline/                # MLP baseline
-├── results/                               # horizon sweep N = 1, 2, 5, 8, 10, 12, 15, 18 (Table 5)
-├── results_unconstrained/                 # relaxed-bound model used in Figure 6
-├── plots/                                 # figures as included in the thesis
-└── extensions/                            # follow-up work (conditional / robustness experiments)
+├── cartpole/                               # shared code used by every script
+│   ├── models.py                           # OptNetCartPoleMPC: feature network + differentiable QP layer
+│   └── utils.py                            # cart-pole model builder (Pinocchio)
+│
+├── scripts/
+│   ├── data/
+│   │   ├── generate_dataset.py             # expert trajectories via constrained trajectory optimisation (aligator/ProxDDP)
+│   │   └── filter_data.py                  # drop extreme trajectories (threshold 20) -> 994 kept
+│   ├── train/
+│   │   ├── train_cartpole.py               # train the OptNet-QP controller
+│   │   ├── train_baseline.py               # train the MLP baseline
+│   │   └── train_unconstrained.py          # same QP structure, cart-position bound relaxed (x_max = 100 m)
+│   ├── evaluate/
+│   │   ├── evaluate_metrics.py             # prediction metrics in physical units (Table 3)
+│   │   ├── evaluate_table_aligator.py      # closed-loop horizon comparison (Table 5)
+│   │   ├── check_expert_success.py         # sanity check on the expert demonstrations
+│   │   └── compute_cartpole_linearization.py
+│   └── figures/
+│       ├── plot_loss_curves.py             # Figure 4
+│       ├── plot_loss_comparison.py         # Figure 5
+│       ├── plot_constrained_vs_relaxed.py  # Figure 6
+│       ├── plot_rollout_comparison.py      # Figure 7 and Table 4
+│       ├── plot_qp_constraints.py          # Figures 8 and 9
+│       ├── plot_dataset_positions.py       # Figure 1
+│       └── plot_dataset_control_forces.py  # Figure 1
+│
+├── data/                                   # dataset
+│   ├── features.pt / labels.pt             # 994 trajectories, used for training
+│   └── features_raw.pt / labels_raw.pt     # 1000 generated trajectories, before filtering
+│
+├── outputs/                                # training results (checkpoints, loss curves, logs)
+│   ├── main/                               # main OptNet-QP model, N = 10
+│   ├── baseline/                           # MLP baseline
+│   ├── horizon/N{1,2,5,8,10,12,15,18}_x1.0_reg1.0    # prediction-horizon sweep (Table 5)
+│   └── relaxed/N10_x100.0_reg1.0           # relaxed cart-position bound (Figure 6)
+│
+├── figures/                                # the figures as included in the thesis
+├── extensions/                             # follow-up work: conditional / robustness experiments
+├── requirements.txt
+└── requirements-aligator.txt
 ```
 
 ## Environment
@@ -70,15 +85,28 @@ aligator:
 pip install -r requirements-aligator.txt
 ```
 
-All commands below are meant to be run from the repository root.
+Every script can be run directly from the repository root — each one adds the repository root
+to `sys.path` itself, so `python scripts/train/train_cartpole.py` works without installing the
+code as a package. All data and output paths are relative to the repository root.
 
 ## Reproducing the results
+
+| Thesis item | Command |
+|---|---|
+| Figure 1 (dataset) | `python scripts/figures/plot_dataset_positions.py` and `...control_forces.py` |
+| Table 3 (prediction accuracy) | `python scripts/evaluate/evaluate_metrics.py` |
+| Figure 4 (loss curves) | `python scripts/figures/plot_loss_curves.py outputs/main` |
+| Figure 5 (OptNet vs. MLP) | `python scripts/figures/plot_loss_comparison.py` |
+| Figure 6 (constrained vs. relaxed) | `python scripts/figures/plot_constrained_vs_relaxed.py` |
+| Figure 7 + Table 4 (rollout) | `python scripts/figures/plot_rollout_comparison.py --limit 1.0 --num-episodes 60` |
+| Figures 8 and 9 (G and h) | `python scripts/figures/plot_qp_constraints.py` |
+| Table 5 (horizon sweep) | `python scripts/evaluate/evaluate_table_aligator.py` |
 
 ### Data (already included — this step is optional)
 
 ```bash
-python generate_dataset.py     # 1000 trajectories -> cartpole_data/features_raw.pt, labels_raw.pt
-python filter_data.py          # remove extreme trajectories -> cartpole_data/features.pt, labels.pt (994)
+python scripts/data/generate_dataset.py  # 1000 trajectories -> data/features_raw.pt, labels_raw.pt
+python scripts/data/filter_data.py       # remove extreme trajectories -> data/features.pt, labels.pt (994)
 ```
 
 `generate_dataset.py` solves a constrained swing-up problem with ProxDDP for each randomly
@@ -89,45 +117,31 @@ exceeds 20.
 
 | File | Shape | Meaning |
 |---|---|---|
-| `cartpole_data/features_raw.pt` / `labels_raw.pt` | (1000, 500, 4) / (1000, 500, 1) | raw generated trajectories |
-| `cartpole_data/features.pt` / `labels.pt` | (994, 500, 4) / (994, 500, 1) | dataset used for training |
+| `data/features_raw.pt` / `labels_raw.pt` | (1000, 500, 4) / (1000, 500, 1) | raw generated trajectories |
+| `data/features.pt` / `labels.pt` | (994, 500, 4) / (994, 500, 1) | dataset used for training |
 
 ### Training
 
 ```bash
-python train_cartpole.py                  # main model -> work_cartpole_filtered/
-python train_baseline.py                  # MLP baseline -> work_cartpole_baseline/
+python scripts/train/train_cartpole.py        # main model -> outputs/main/
+python scripts/train/train_baseline.py        # MLP baseline -> outputs/baseline/
 
 # prediction-horizon sweep (Table 5)
 for N in 1 2 5 8 10 12 15 18; do
-  python train_cartpole.py --N $N --output-dir results/N${N}_x1.0_reg1.0
+  python scripts/train/train_cartpole.py --N $N --output-dir outputs/horizon/N${N}_x1.0_reg1.0
 done
 
 # relaxed position bound used in Figure 6
-python train_unconstrained.py --x-max 100.0 --output-dir results_unconstrained/N10_x100.0_reg1.0
+python scripts/train/train_unconstrained.py --x-max 100.0 --output-dir outputs/relaxed/N10_x100.0_reg1.0
 ```
 
 ### Evaluation
 
 ```bash
-python evaluate_metrics.py            # Table 3: MSE / RMSE / MAE / R² / correlation
-python evaluate_table_aligator.py     # Table 5: horizon comparison in closed loop
-python check_expert_success.py        # sanity check on the expert demonstrations
+python scripts/evaluate/evaluate_metrics.py         # Table 3: MSE / RMSE / MAE / R² / correlation
+python scripts/evaluate/evaluate_table_aligator.py  # Table 5: horizon comparison in closed loop
+python scripts/evaluate/check_expert_success.py     # sanity check on the expert demonstrations
 ```
-
-### Figures
-
-```bash
-python plot.py work_cartpole_filtered                                     # Figure 4
-python plot_comparison.py                                                 # Figure 5
-python analyze_constrained_unconstrained.py                               # Figure 6
-python plot_optnet_vs_mlp_many_trajectories.py --limit 1.0 --num-episodes 60   # Figure 7, Table 4
-python plot_qp_constraints_standalone.py                                  # Figures 8 and 9
-python plot_all_trajectories_constraints.py                               # Figure 1
-python plot_all_control_forces_constraints.py                             # Figure 1
-```
-
-Figures 2 and 3 (model diagrams) were drawn outside of this code base.
 
 ## The model in one paragraph
 
@@ -143,18 +157,18 @@ objective.
 
 ## Notes and known issues
 
-- **Two different `N = 10` models exist.** `work_cartpole_filtered/` is the main model used for
+- **Two different `N = 10` models exist.** `outputs/main/` is the main model used for
   Figure 4, Figure 7, Table 3 and Table 4 (final validation loss 0.1957, normalised).
-  `results/N10_x1.0_reg1.0/` comes from a later training run performed as part of the horizon
-  sweep and is the `N = 10` row of Table 5 / the constrained curve in Figure 6 (last-5-epoch mean
-  validation loss 0.2802). They are separate runs, not two evaluations of one checkpoint.
+  `outputs/horizon/N10_x1.0_reg1.0/` comes from a later training run performed as part of the
+  horizon sweep and is the `N = 10` row of Table 5 / the constrained curve in Figure 6
+  (last-5-epoch mean validation loss 0.2802). They are separate runs, not two evaluations of
+  one checkpoint.
 - **QP regularisation.** The thesis describes the regularisation term as `ε = 10^-1`, while the
-  saved runs use `--reg 1.0` (`results/*/training_params.txt`). The checkpoint in this repository
-  was produced with `--reg 1.0`, i.e. the default of `train_cartpole.py`.
-- **Figure 1 composition.** `plot_all_trajectories_constraints.py` and
-  `plot_all_control_forces_constraints.py` each produce a two-panel figure (trajectories plus a
-  histogram). The two-panel position/force layout printed in the thesis was composed from these
-  outputs.
+  saved runs use `--reg 1.0` (`outputs/horizon/*/training_params.txt`). The checkpoints in this
+  repository were produced with `--reg 1.0`, i.e. the default of `train_cartpole.py`.
+- **Figure 1 composition.** `plot_dataset_positions.py` and `plot_dataset_control_forces.py`
+  each produce a two-panel figure (trajectories plus a histogram). The two-panel position/force
+  layout printed in the thesis was composed from these outputs.
 - `evaluate_table_aligator.py` performs the closed-loop rollout with the true aligator dynamics,
   so it is the only script that requires the optional dependencies.
 - The QP layer is a convex layer with a linear prediction model; it is not a nonlinear MPC

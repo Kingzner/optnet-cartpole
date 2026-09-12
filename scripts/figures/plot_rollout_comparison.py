@@ -1,5 +1,13 @@
-import argparse
 import os
+import sys
+
+# Allow this script to be run directly from the repository root, e.g.
+#     python scripts/figures/plot_rollout_comparison.py
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
+import argparse
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -52,10 +60,10 @@ def normalize_input(x_phys, norm_stats):
 
 
 def load_models(limit, device):
-    from models import OptNetCartPoleMPC
+    from cartpole.models import OptNetCartPoleMPC
 
-    optnet_workdir = "work_cartpole_filtered"
-    baseline_workdir = "work_cartpole_baseline"
+    optnet_workdir = "outputs/main"
+    baseline_workdir = "outputs/baseline"
 
     optnet_norm = torch.load(
         os.path.join(optnet_workdir, "norm_stats.pt"),
@@ -280,8 +288,8 @@ def main():
     parser.add_argument("--limit", type=float, default=1.0)
     parser.add_argument("--num-episodes", type=int, default=60)
     parser.add_argument("--chunk-size", type=int, default=4)
-    parser.add_argument("--data-dir", type=str, default="cartpole_data")
-    parser.add_argument("--output-dir", type=str, default="plots")
+    parser.add_argument("--data-dir", type=str, default="data")
+    parser.add_argument("--output-dir", type=str, default="figures")
     parser.add_argument("--feasibility-margin", type=float, default=0.02)
     parser.add_argument("--dt", type=float, default=0.01)
     args = parser.parse_args()

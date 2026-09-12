@@ -1,3 +1,12 @@
+import os
+import sys
+
+# Allow this script to be run directly from the repository root, e.g.
+#     python scripts/figures/plot_qp_constraints.py
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -37,9 +46,9 @@ def plot_G_matrix(N=10, u_min=-10.0, u_max=10.0, x_min=-1.0, x_max=1.0):
     ax.set_xlabel('Decision variable index')
     ax.set_ylabel('Inequality constraint')
     plt.tight_layout()
-    plt.savefig('plots/G_matrix_N10.png', dpi=300, bbox_inches='tight')
-    plt.savefig('plots/G_matrix_N10.pdf', dpi=300, bbox_inches='tight')
-    print("Saved: plots/G_matrix_N10.png")
+    plt.savefig('figures/G_matrix_N10.png', dpi=300, bbox_inches='tight')
+    plt.savefig('figures/G_matrix_N10.pdf', dpi=300, bbox_inches='tight')
+    print("Saved: figures/G_matrix_N10.png")
     plt.close()
 
 def plot_h_vector(N=10, u_min=-10.0, u_max=10.0, x_min=-1.0, x_max=1.0):
@@ -75,9 +84,9 @@ def plot_h_vector(N=10, u_min=-10.0, u_max=10.0, x_min=-1.0, x_max=1.0):
     plt.xticks(range(len(h)), labels, rotation=45, ha='right', fontsize=9)
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.tight_layout()
-    plt.savefig('plots/h_vector_N10.png', dpi=300, bbox_inches='tight')
-    plt.savefig('plots/h_vector_N10.pdf', dpi=300, bbox_inches='tight')
-    print("Saved: plots/h_vector_N10.png")
+    plt.savefig('figures/h_vector_N10.png', dpi=300, bbox_inches='tight')
+    plt.savefig('figures/h_vector_N10.pdf', dpi=300, bbox_inches='tight')
+    print("Saved: figures/h_vector_N10.png")
     plt.close()
 
 def main():

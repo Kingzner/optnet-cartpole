@@ -1,9 +1,17 @@
-import torch
 import os
+import sys
+
+# Allow this script to be run directly from the repository root, e.g.
+#     python scripts/data/filter_data.py
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
+import torch
 
 # 输入：generate_dataset.py 生成的原始轨迹
 # 输出：过滤后用于训练/评估的轨迹（文件名与训练脚本期望的一致）
-data_dir = "cartpole_data"
+data_dir = "data"
 X = torch.load(os.path.join(data_dir, "features_raw.pt"))
 Y = torch.load(os.path.join(data_dir, "labels_raw.pt"))
 

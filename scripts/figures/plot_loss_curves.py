@@ -1,4 +1,12 @@
 import os
+import sys
+
+# Allow this script to be run directly from the repository root, e.g.
+#     python scripts/figures/plot_loss_curves.py
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import argparse
@@ -6,7 +14,7 @@ import argparse
 # 解析命令行参数
 parser = argparse.ArgumentParser(description='Plot training results')
 parser.add_argument('workdir', type=str, help='Directory containing training results')
-parser.add_argument('--output-dir', type=str, default='plots', 
+parser.add_argument('--output-dir', type=str, default='figures', 
                     help='Output directory for plots')
 parser.add_argument('--filename', type=str, default='loss_curves', 
                     help='Output filename (without extension)')

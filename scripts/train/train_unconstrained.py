@@ -1,4 +1,12 @@
 import os
+import sys
+
+# Allow this script to be run directly from the repository root, e.g.
+#     python scripts/train/train_unconstrained.py
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
 import torch
 import numpy as np
 from torch.utils.data import DataLoader, TensorDataset
@@ -6,7 +14,7 @@ import torch.nn as nn
 import torch.optim as optim
 import argparse
 
-from models import OptNetCartPoleMPC
+from cartpole.models import OptNetCartPoleMPC
 
 ###############################
 # 命令行参数解析 - 无约束版本
@@ -21,8 +29,8 @@ parser.add_argument('--reg', type=float, default=1.0, help='QP regularization ep
 parser.add_argument('--lr', type=float, default=1e-3, help='Learning rate (default: 1e-3)')
 parser.add_argument('--epochs', type=int, default=50, help='Number of training epochs (default: 50)')
 parser.add_argument('--batch-size', type=int, default=32, help='Batch size (default: 32)')
-parser.add_argument('--output-dir', type=str, default='results_unconstrained', help='Output directory')
-parser.add_argument('--data-dir', type=str, default='cartpole_data', help='Data directory')
+parser.add_argument('--output-dir', type=str, default='outputs/relaxed', help='Output directory')
+parser.add_argument('--data-dir', type=str, default='data', help='Data directory')
 args = parser.parse_args()
 
 BATCH_SIZE = args.batch_size
@@ -31,7 +39,7 @@ LR = args.lr
 WORKDIR = args.output_dir
 os.makedirs(WORKDIR, exist_ok=True)
 
-def load_data(data_dir="cartpole_data", normalize=True, val_ratio=0.1, test_ratio=0.2):
+def load_data(data_dir="data", normalize=True, val_ratio=0.1, test_ratio=0.2):
     X = torch.load(os.path.join(data_dir, "features.pt"))
     Y = torch.load(os.path.join(data_dir, "labels.pt"))
 

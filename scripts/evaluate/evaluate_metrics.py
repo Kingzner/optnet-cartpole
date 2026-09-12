@@ -1,10 +1,19 @@
+import os
+import sys
+
+# Allow this script to be run directly from the repository root, e.g.
+#     python scripts/evaluate/evaluate_metrics.py
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
 import torch
 import numpy as np
 from torch.utils.data import DataLoader, TensorDataset
-from models import OptNetCartPoleMPC
+from cartpole.models import OptNetCartPoleMPC
 
-WORKDIR = 'work_cartpole_filtered'
-DATA_DIR = 'cartpole_data'
+WORKDIR = 'outputs/main'
+DATA_DIR = 'data'
 
 # Load data
 X = torch.load(DATA_DIR + '/features.pt', weights_only=True).unsqueeze(-1).float()

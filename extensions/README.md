@@ -31,23 +31,20 @@ extensions/
 ## Running
 
 `robustness.py` is self-contained (it defines its own `OptNetCartPoleH3` module) and needs
-Pinocchio and aligator:
+Pinocchio and aligator. Run it from the repository root:
 
 ```bash
-pip install -r ../requirements-aligator.txt
+pip install -r requirements-aligator.txt
 
 # random initial states
-python extensions/robustness.py --mode random --num 100 \
-    --model_path extensions/weights/cartpole_optnet_best_2B.pth \
-    --norm_stats_path extensions/weights/norm_stats.pt \
-    --data_dir cartpole_data
+python extensions/robustness.py --mode random --num 100
 
 # initial states taken from the training set
-python extensions/robustness.py --mode train --num 100 \
-    --model_path extensions/weights/cartpole_optnet_best_2B.pth \
-    --norm_stats_path extensions/weights/norm_stats.pt \
-    --data_dir cartpole_data
+python extensions/robustness.py --mode train --num 100
 ```
+
+The defaults already point at `extensions/weights/` for the checkpoints and at `data/` for the
+dataset; results are written to `extensions/data/`.
 
 ## Known issue
 

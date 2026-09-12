@@ -1,15 +1,23 @@
 import os
+import sys
+
+# Allow this script to be run directly from the repository root, e.g.
+#     python scripts/figures/plot_loss_comparison.py
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import argparse
 
 # 解析命令行参数
 parser = argparse.ArgumentParser(description='Plot OptNet vs Baseline comparison')
-parser.add_argument('--optnet-dir', type=str, default='work_cartpole_filtered', 
+parser.add_argument('--optnet-dir', type=str, default='outputs/main', 
                     help='Directory containing OptNet training results')
-parser.add_argument('--baseline-dir', type=str, default='work_cartpole_baseline', 
+parser.add_argument('--baseline-dir', type=str, default='outputs/baseline', 
                     help='Directory containing Baseline MLP training results')
-parser.add_argument('--output-dir', type=str, default='plots', 
+parser.add_argument('--output-dir', type=str, default='figures', 
                     help='Output directory for the comparison plot')
 args = parser.parse_args()
 

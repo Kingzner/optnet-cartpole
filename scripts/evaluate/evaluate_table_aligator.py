@@ -1,14 +1,22 @@
 import os
+import sys
+
+# Allow this script to be run directly from the repository root, e.g.
+#     python scripts/evaluate/evaluate_table_aligator.py
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
 
 import numpy as np
 import torch
 
-from models import OptNetCartPoleMPC
+from cartpole.models import OptNetCartPoleMPC
 
 try:
     import aligator
     from aligator import manifolds
-    from utils import create_cartpole
+    from cartpole.utils import create_cartpole
 except ImportError as exc:
     raise ImportError(
         "evaluate_table_aligator.py needs aligator and utils.py. "
@@ -34,10 +42,10 @@ def torch_load(path, **kwargs):
 
 
 def load_features():
-    for path in ["features.pt", os.path.join("cartpole_data", "features.pt")]:
+    for path in ["features.pt", os.path.join("data", "features.pt")]:
         if os.path.exists(path):
             return torch_load(path, map_location="cpu").float()
-    raise FileNotFoundError("Could not find features.pt or cartpole_data/features.pt")
+    raise FileNotFoundError("Could not find features.pt or data/features.pt")
 
 
 def load_loss_data(model_dir):
@@ -211,7 +219,7 @@ def main():
     print("-" * 95)
 
     for N in N_VALUES:
-        model_dir = f"results/N{N}_x1.0_reg1.0"
+        model_dir = f"outputs/horizon/N{N}_x1.0_reg1.0"
         if not os.path.exists(model_dir):
             print(f"{N:^12} {'-' * 18} {'-' * 12} {'-' * 16} {'-' * 16} {'-' * 14}")
             continue
@@ -249,7 +257,7 @@ def main():
 
     print("=" * 95)
 
-    with open("table_results_aligator.csv", "w") as f:
+    with open("outputs/horizon/table_results_aligator.csv", "w") as f:
         f.write("N,Validation loss,Rollout RMSE,Violation rate,Max violation,Success rate\n")
         for r in results:
             f.write(

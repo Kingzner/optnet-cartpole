@@ -1,10 +1,18 @@
+import os
+import sys
+
+# Allow this script to be run directly from the repository root, e.g.
+#     python scripts/figures/plot_dataset_positions.py
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
-import os
 
-DATA_DIR = "cartpole_data"
-OUTPUT_DIR = "plots"
+DATA_DIR = "data"
+OUTPUT_DIR = "figures"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def load_data():

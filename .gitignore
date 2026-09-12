@@ -20,15 +20,11 @@ error.*.err
 *.log
 
 # Intermediate files produced by the scripts
-cartpole_data/features_clean.pt
-cartpole_data/labels_clean.pt
-cartpole_data/features_original_backup.pt
-cartpole_data/labels_original_backup.pt
 cartpole_linear_dt001.npz
 constrained_vs_unconstrained_results.pkl
 quick_constrained_vs_unconstrained.pkl
-table_results.csv
+outputs/horizon/table_results.csv
 
-# Note: model checkpoints, results/ and cartpole_data/features*.pt are intentionally
-# tracked, so that every figure and table in the thesis can be reproduced without
-# re-training or re-generating the dataset.
+# Note: the dataset (data/), the training results (outputs/) and the figures
+# (figures/) are intentionally tracked, so that every figure and table in the
+# thesis can be reproduced without re-training or re-generating the dataset.

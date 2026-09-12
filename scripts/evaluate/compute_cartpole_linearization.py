@@ -1,11 +1,19 @@
-import argparse
 import os
+import sys
+
+# Allow this script to be run directly from the repository root, e.g.
+#     python scripts/evaluate/compute_cartpole_linearization.py
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
+import argparse
 
 import aligator
 import numpy as np
 from aligator import manifolds
 
-from utils import create_cartpole
+from cartpole.utils import create_cartpole
 
 
 def model_to_aligator_state(x_model_order):

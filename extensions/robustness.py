@@ -5,8 +5,16 @@
     python robustness_aligator.py --mode random --num 100
     python robustness_aligator.py --mode train   # 需提供 features.pt
 """
-
 import os
+import sys
+
+# Allow this script to be run directly from the repository root, e.g.
+#     python extensions/robustness.py
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
+
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
@@ -269,7 +277,7 @@ def simulate_step_aligator(state, action, disc_dyn, data):
     return np.array([x_next, x_dot_next, theta_next, theta_dot_next])
 
 # ==================== 数据加载（训练集初始状态） ====================
-def load_train_init_states(data_dir="cartpole_data", train_ratio=0.7, val_ratio=0.1):
+def load_train_init_states(data_dir="data", train_ratio=0.7, val_ratio=0.1):
     """从 features.pt 中提取训练集和验证集的初始状态（物理单位）"""
     import torch
     X = torch.load(os.path.join(data_dir, "features.pt"))  # (N, T, 4)
@@ -289,11 +297,11 @@ def main():
     parser.add_argument("--mode", choices=["train", "random"], default="random",
                         help="测试模式：train 使用训练集初始状态，random 随机生成")
     parser.add_argument("--num", type=int, default=100, help="随机模式下的样本数")
-    parser.add_argument("--model_path", type=str, default="cartpole_optnet_best_2B.pth",
+    parser.add_argument("--model_path", type=str, default="extensions/weights/cartpole_optnet_best_2B.pth",
                         help="模型权重文件路径")
-    parser.add_argument("--norm_stats_path", type=str, default="norm_stats.pt",
+    parser.add_argument("--norm_stats_path", type=str, default="extensions/weights/norm_stats.pt",
                         help="标准化统计量文件路径")
-    parser.add_argument("--data_dir", type=str, default="cartpole_data",
+    parser.add_argument("--data_dir", type=str, default="data",
                         help="原始数据目录（train模式需要）")
     parser.add_argument("--dt", type=float, default=0.02, help="仿真步长（应与模型一致）")
     parser.add_argument("--max_steps", type=int, default=300, help="最大仿真步数")
@@ -408,7 +416,7 @@ def main():
         print("所有样本均收敛，无需绘图。")
 
     # 保存结果
-    np.savez('robustness_aligator_results.npz',
+    np.savez('extensions/data/robustness_aligator_results.npz',
              init_states=init_states,
              converged=converged_flags,
              steps=[r[2] for r in results])

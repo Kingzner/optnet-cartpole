@@ -3,23 +3,31 @@
 支持自定义任务参数范围，输出收敛率、热图、失败案例
 """
 import os
+import sys
+
+# Allow this script to be run directly from the repository root, e.g.
+#     python extensions/test_conditional_robustness.py
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
-from models import OptNetCartPoleH3_Conditional
+from cartpole.models import OptNetCartPoleH3_Conditional
 import pinocchio as pin
 import aligator
 from aligator import manifolds, dynamics
-from utils import create_cartpole
+from cartpole.utils import create_cartpole
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="qpth")
 
 # ==================== 配置 ====================
 parser = argparse.ArgumentParser()
-parser.add_argument("--model_path", type=str, default="best_model_conditional.pth")
-parser.add_argument("--norm_stats_path", type=str, default="norm_stats_conditional.pt")
+parser.add_argument("--model_path", type=str, default="extensions/weights/best_model_conditional.pth")
+parser.add_argument("--norm_stats_path", type=str, default="extensions/weights/norm_stats_conditional.pt")
 parser.add_argument("--num_tasks", type=int, default=20, help="测试的任务数量")
 parser.add_argument("--num_init_per_task", type=int, default=5, help="每个任务测试的初始状态数")
 parser.add_argument("--dt", type=float, default=0.02)
@@ -219,5 +227,5 @@ else:
     print("点数不足，跳过热图绘制")
 
 # 保存结果
-np.savez("test_results.npz", tasks=task_array, rates=rates)
+np.savez("extensions/data/test_results.npz", tasks=task_array, rates=rates)
 print("测试完成，结果已保存至 test_results.npz")

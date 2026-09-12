@@ -1,20 +1,29 @@
+import os
+import sys
+
+# Allow this script to be run directly from the repository root, e.g.
+#     python scripts/figures/plot_constrained_vs_relaxed.py
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
 # 读取有约束结果（N=10，cart position limit = ±1.0 m）
-constrained_df_val = pd.read_csv("results/N10_x1.0_reg1.0/val.csv")
-constrained_df_train = pd.read_csv("results/N10_x1.0_reg1.0/train.csv")
+constrained_df_val = pd.read_csv("outputs/horizon/N10_x1.0_reg1.0/val.csv")
+constrained_df_train = pd.read_csv("outputs/horizon/N10_x1.0_reg1.0/train.csv")
 val_constrained = constrained_df_val['loss'].values
 train_constrained = constrained_df_train['loss'].values
 
 # 读取放宽位置约束的结果（x_max = 100.0 m，位置约束实际不生效）
-val_unconstrained = np.loadtxt("results_unconstrained/N10_x100.0_reg1.0/val.csv", delimiter=',')
-train_unconstrained = np.loadtxt("results_unconstrained/N10_x100.0_reg1.0/train.csv", delimiter=',')
+val_unconstrained = np.loadtxt("outputs/relaxed/N10_x100.0_reg1.0/val.csv", delimiter=',')
+train_unconstrained = np.loadtxt("outputs/relaxed/N10_x100.0_reg1.0/train.csv", delimiter=',')
 
 # 读取baseline结果
-baseline_df_val = pd.read_csv("work_cartpole_baseline/val_loss.csv")
-baseline_df_train = pd.read_csv("work_cartpole_baseline/train_loss.csv")
+baseline_df_val = pd.read_csv("outputs/baseline/val_loss.csv")
+baseline_df_train = pd.read_csv("outputs/baseline/train_loss.csv")
 val_baseline = baseline_df_val['loss'].values
 train_baseline = baseline_df_train['loss'].values
 
@@ -43,7 +52,7 @@ plt.title('Constrained vs Unconstrained vs Baseline - Validation')
 plt.legend()
 plt.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig("plots/constrained_vs_unconstrained_vs_baseline_val.png", dpi=150)
+plt.savefig("figures/constrained_vs_unconstrained_vs_baseline_val.png", dpi=150)
 
 # 绘图2 - 训练集
 plt.figure(figsize=(10, 6))
@@ -56,7 +65,7 @@ plt.title('Constrained vs Unconstrained vs Baseline - Training')
 plt.legend()
 plt.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig("plots/constrained_vs_unconstrained_vs_baseline_train.png", dpi=150)
+plt.savefig("figures/constrained_vs_unconstrained_vs_baseline_train.png", dpi=150)
 
 print("\nPlots saved:")
 print("  - plots/constrained_vs_unconstrained_vs_baseline_val.png (Validation)")
