@@ -188,5 +188,6 @@ ProxDDP (see `THIRD_PARTY_NOTICES.md`).
 
 ## License
 
-Released under the MIT License — see [`LICENSE`](LICENSE). Third-party components and their
-licenses are listed in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+Released under the Apache License 2.0 — see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
+Third-party components and their licenses are listed in
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).

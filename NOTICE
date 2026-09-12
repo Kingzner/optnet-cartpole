@@ -1,0 +1,11 @@
+optnet-cartpole
+Copyright 2026 Kingzner (Enze Jin)
+
+This product includes software derived from the aligator project
+(https://github.com/Simple-Robotics/aligator), Copyright (c) 2022-2025 Inria,
+licensed under the BSD 2-Clause License. See THIRD_PARTY_NOTICES.md for the
+full notice.
+
+The differentiable QP layer builds on qpth (https://github.com/locuslab/qpth)
+and follows the OptNet paper (Amos & Kolter, ICML 2017), both distributed under
+the Apache License 2.0. See THIRD_PARTY_NOTICES.md.
