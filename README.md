@@ -1,5 +1,10 @@
 # OptNet-Based Constrained Imitation Learning for Cart-Pole Control
 
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![Thesis](https://img.shields.io/badge/thesis-PDF-success.svg)](docs/thesis.pdf)
+
 Code and data for my final year project (SAT301): a cart-pole controller that learns from
 expert demonstrations and produces its control output through a **differentiable quadratic
 programming layer** (OptNet), so that the physical constraints — control force
@@ -10,6 +15,16 @@ The controller is compared against a plain MLP baseline trained on the same demo
 The main finding is that the MLP reaches a slightly lower one-step prediction error, but the
 OptNet-QP controller is the one that respects the cart-position bound during closed-loop
 rollout.
+
+## Thesis
+
+**OptNet-Based Constrained Imitation Learning for Cart-Pole Control** — Enze Jin, final year
+project (SAT301), School of Advanced Technology, 2026. Supervisor: Kai Pfeiffer.
+
+📄 **[Read the full thesis (PDF)](docs/thesis.pdf)**
+
+Every figure and table referenced below (Figure 1–9, Table 2–5) is defined in that document;
+the sections below map each of them to the command that reproduces it.
 
 ## Key results
 
@@ -205,3 +220,6 @@ ProxDDP (see `THIRD_PARTY_NOTICES.md`).
 Released under the Apache License 2.0 — see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
 Third-party components and their licenses are listed in
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+
+The license above covers the **code and data** in this repository. The thesis text itself
+(`docs/thesis.pdf`) is © 2026 Enze Jin, all rights reserved.

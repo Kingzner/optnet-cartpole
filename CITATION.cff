@@ -1,0 +1,71 @@
+cff-version: 1.2.0
+message: "If you use this code or data, please cite the thesis below."
+title: "OptNet-Based Constrained Imitation Learning for Cart-Pole Control"
+type: thesis
+authors:
+  - family-names: Jin
+    given-names: Enze
+year: 2026
+institution:
+  name: School of Advanced Technology
+url: "https://github.com/Kingzner/optnet-cartpole"
+repository-code: "https://github.com/Kingzner/optnet-cartpole"
+abstract: >-
+  A cart-pole controller that learns from expert trajectory-optimisation demonstrations and
+  produces its control output through a differentiable quadratic programming layer (OptNet),
+  so that the control-force and cart-position limits are part of the model structure rather
+  than learned only from data. The OptNet-QP controller is compared against an MLP baseline on
+  prediction accuracy, closed-loop rollout behaviour and constraint violation counts.
+keywords:
+  - optnet
+  - differentiable optimization
+  - quadratic programming
+  - model predictive control
+  - imitation learning
+  - cart-pole
+license: Apache-2.0
+preferred-citation:
+  type: thesis
+  title: "OptNet-Based Constrained Imitation Learning for Cart-Pole Control"
+  authors:
+    - family-names: Jin
+      given-names: Enze
+  year: 2026
+  institution:
+    name: School of Advanced Technology
+references:
+  - type: conference-paper
+    title: "OptNet: Differentiable Optimization as a Layer in Neural Networks"
+    authors:
+      - family-names: Amos
+        given-names: Brandon
+      - family-names: Kolter
+        given-names: J. Zico
+    year: 2017
+    collection-title: "Proceedings of the 34th International Conference on Machine Learning"
+    volume: "70"
+    start: 136
+    end: 145
+    publisher:
+      name: PMLR
+  - type: article
+    title: "PROXDDP: Proximal constrained trajectory optimization"
+    authors:
+      - family-names: Jallet
+        given-names: Wilson
+      - family-names: Bambade
+        given-names: Antoine
+      - family-names: Arlaud
+        given-names: Etienne
+      - family-names: El-Kazdadi
+        given-names: Sarah
+      - family-names: Mansard
+        given-names: Nicolas
+      - family-names: Carpentier
+        given-names: Justin
+    year: 2025
+    journal: "IEEE Transactions on Robotics"
+    volume: "41"
+    start: 2605
+    end: 2624
+    doi: "10.1109/TRO.2025.3554437"
